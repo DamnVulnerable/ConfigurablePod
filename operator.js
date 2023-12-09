@@ -7,7 +7,7 @@ const Operator = k8sOperator.default;
 const { ResourceEventType } = k8sOperator;
 
 
-class MyOperator extends Operator {
+class ConfigurablePodOperator extends Operator {
 
     async init() {
         debug('Starting operator...');
@@ -33,5 +33,5 @@ class MyOperator extends Operator {
 }
 
 module.exports = {
-    MyOperator
+    ConfigurablePodOperator
 }

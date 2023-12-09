@@ -1,8 +1,8 @@
-const { MyOperator } = require('./operator');
+const { ConfigurablePodOperator } = require('./operator');
 
 async function main() {
 
-    const operator = new MyOperator();
+    const operator = new ConfigurablePodOperator();
     await operator.start();
 
     const exit = (reason) => {
