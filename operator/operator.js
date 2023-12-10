@@ -6,6 +6,9 @@ const debug = require('debug')('operator')
 const Operator = k8sOperator.default;
 const { ResourceEventType } = k8sOperator;
 
+const kc = new k8s.KubeConfig();
+kc.loadFromDefault();
+const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
 
 class ConfigurablePodOperator extends Operator {
 
@@ -20,9 +23,20 @@ class ConfigurablePodOperator extends Operator {
             switch (e.type) {
                 case ResourceEventType.Added:
                     debug('Added: %s', e.object.metadata.name);
+                    await k8sApi.createNamespacedPod(e.object.metadata.namespace, {...e.object.spec.template,
+                        metadata: {
+                            name: e.object.metadata.name
+                        }
+                    });
                     break;
                 case ResourceEventType.Modified:
                     debug('Modified: %s', e.object.metadata.name);
+                    await k8sApi.deleteNamespacedPod(e.object.metadata.name, e.object.metadata.namespace);
+                    await k8sApi.createNamespacedPod(e.object.metadata.namespace, {...e.object.spec.template,
+                        metadata: {
+                            name: e.object.metadata.name
+                        }
+                    });
                     break;
                 case ResourceEventType.Deleted:
                     debug('Deleted: %s', e.object.metadata.name);
