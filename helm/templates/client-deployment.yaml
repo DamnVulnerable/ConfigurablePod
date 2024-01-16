@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Chart.Name }}-client
+  labels:
+    app: {{ .Release.Name }}-{{ .Chart.Name }}-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Chart.Name }}-client
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Chart.Name }}-client
+    spec:
+      serviceAccountName: {{ .Release.Name }}-{{ .Chart.Name }}-client
+      containers:
+        - name: {{ .Release.Name }}-{{ .Chart.Name }}-client
+          image: bitnami/kubectl
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 0
+          command:
+          - /bin/sh
+          - -c
+          - 'tail -f /dev/null'
